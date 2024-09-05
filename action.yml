@@ -1,8 +1,14 @@
-name: 'Template action'
-description: 'Replace me'
+name: 'Setup for pipeline'
+description: 'Common setup for my Android pipelines'
 runs:
   using: "composite"
   steps:
-    - name: Hello
-      run: echo "Hello World!"
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+    - name: Grant execute permission for gradlew
       shell: bash
+      run: chmod +x gradlew
