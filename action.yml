@@ -2,6 +2,15 @@
 
 name: 'Setup for pipeline'
 description: 'Common setup for my Android pipelines'
+inputs:
+  google_services_json_value:
+    description: 'The base64 encoded value of the google-services.json file. Ideally passed in from secrets.'
+    required: false
+    default: ''
+  google_services_json_path:
+    description: 'Used with generate_google_services_json to state where the google-services.json file gets saved to in the project directory.'
+    required: false
+    default: './app/google-services.json'
 runs:
   using: "composite"
   steps:
@@ -14,3 +23,10 @@ runs:
     - name: Grant execute permission for gradlew
       shell: bash
       run: chmod +x gradlew
+    - name: Grant execute permission for gradlew
+      if: ${{ inputs.google_services_json_value  != '' }}
+      env:
+        GOOGLE_SERVICES_JSON_PATH: ${{ inputs.google_services_json_path }}
+        GOOGLE_SERVICES_JSON_VALUE: ${{ inputs.google_services_json_value }}
+      shell: bash
+      run: echo "$GOOGLE_SERVICES_JSON_VALUE" | base64 -di > "$GOOGLE_SERVICES_JSON_PATH"
